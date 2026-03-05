@@ -20,7 +20,7 @@ export const tokenClassNames = {
   'template-string': 'text-code-green',
   function: 'text-code-blue',
   boolean: 'text-code-red',
-  comment: 'text-gray-400 italic',
+  comment: 'text-code-comment italic',
   property: 'text-code-teal',
   'property-access': 'text-code-teal',
   dom: 'text-code-blue',
@@ -68,7 +68,7 @@ export const rehypePlugins = [
   rehypePrism,
   () => {
     return (tree) => {
-      visit(tree, 'element', (node, index, parent) => {
+      visit(tree, 'element', (node, _index, _parent) => {
         const [token, type] = node.properties.className || [];
 
         if (token === 'token') {

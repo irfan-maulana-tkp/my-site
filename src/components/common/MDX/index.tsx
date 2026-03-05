@@ -1,12 +1,11 @@
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
-import Image, { ImageProps } from 'next/image';
 import { Flipped } from 'react-flip-toolkit';
 import dynamic from 'next/dynamic';
 
 import { Panel } from '@/components/common/Panel';
 import { HorizontalDivider } from '@/components/Divider';
 import { FunctionRenderer } from '@/components/FunctionRenderer';
-import { LightButton } from '@/components/common/Button/LightButton';
+import { Button } from '@/components/common/Button';
 import { Surfaces, Colors } from '@/components/DesignDemo';
 import type { Props as ProfileCardProps } from '@/components/FlipDemos/ProfileCard';
 import type { Props as ProfileHeroProps } from '@/components/FlipDemos/ProfileHero';
@@ -34,8 +33,7 @@ const mdxComponents = {
   h3: withTocHighlighter(H3),
   h4: H4,
   h5: H5,
-  Image,
-  ClickableImage: (props: ImageProps) => {
+  ClickableImage: (props: React.ImgHTMLAttributes<HTMLImageElement>) => {
     return (
       <a
         href={props.src as string}
@@ -43,7 +41,7 @@ const mdxComponents = {
         rel="noopener noreferrer"
         className={cn('relative block w-full h-96 not-prose')}
       >
-        <Image {...props} className={cn('object-contain')} />
+        <img loading="lazy" {...props} className={cn('object-contain')} />
       </a>
     );
   },
@@ -57,7 +55,7 @@ const mdxComponents = {
 
   /* Needed for some posts */
   Panel,
-  LightButton,
+  Button,
   Surfaces,
   Colors,
 

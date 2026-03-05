@@ -1,20 +1,20 @@
-import { Lora, Work_Sans } from '@next/font/google';
+import { Epilogue, Fraunces } from 'next/font/google';
 
-export const mainFont = Work_Sans({
-  variable: '--main-font',
-  display: 'swap',
+// Fraunces is a variable font with opsz axis support
+const fraunces = Fraunces({
   subsets: ['latin'],
-  preload: true,
-  weight: ['400', '700'],
+  axes: ['opsz'],
+  style: ['normal', 'italic'],
+  variable: '--font-fraunces',
+  display: 'swap',
 });
 
-export const headingFont = Lora({
-  variable: '--heading-font',
-  display: 'swap',
+const sans = Epilogue({
   subsets: ['latin'],
-  preload: true,
-  weight: ['400', '500', '700'],
+  weight: ['300', '400', '500', '600'],
+  variable: '--font-epilogue',
+  display: 'swap',
 });
 
-export const fontsClasses = `${mainFont.variable} ${headingFont.variable}`;
+export const fontsClasses = `${fraunces.variable} ${sans.variable}`;
 export const initFonts = () => fontsClasses;

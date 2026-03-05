@@ -1,69 +1,80 @@
-import { useRouter } from 'next/router';
-import { Flipped } from 'react-flip-toolkit';
 import { Fragment } from 'react';
+import { useRouter } from 'next/router';
 import { GetStaticProps } from 'next/types';
 
+import { WritingItem } from '@/blog/types';
 import { getPosts } from '@/blog/getPosts';
+import { mergeWritings } from '@/blog/writings';
+import { PostRow } from '@/components/Blog/PostRow';
+import { PageHeader } from '@/components/common/PageHeader';
+import { TextLink } from '@/components/common/TextLink';
 import { PageMetaTags } from '@/components/Seo/PageMetaTags';
-import { PostPreviewList } from '@/components/Blog/Post/PostPreviewList';
-import { EmojiSpan } from '@/components/Typography/EmojiSpan';
-import { Tag } from '@/components/common/Tag';
-import { Post } from '@/blog/types';
-
-import { PageTitle } from '../components/Typography/PageTitle';
-
-const Tags = ({ tags = [] }: { tags: string[] }) => {
-  if (tags.length === 0) return null;
-
-  return (
-    <div className="inline-flex space-x-4 items-center">
-      <span>in</span>
-      {tags.map((tag, i) => {
-        return (
-          <Fragment key={i}>
-            <Tag variant="secondary">{tag}</Tag>
-            {i !== tags.length - 1 ? ',' : ''}
-          </Fragment>
-        );
-      })}
-    </div>
-  );
-};
 
 type Props = {
-  posts: Post[];
+  writings: WritingItem[];
 };
 
-export default function BlogPage({ posts }: Props) {
+export default function BlogPage({ writings }: Props) {
   const router = useRouter();
   const tags = router.query.tags ? String(router.query.tags).split(',') : [];
 
-  const filteredPosts =
+  const filteredWritings =
     tags.length > 0
-      ? posts.filter((post) => {
-          return tags.some((tag) => post.metadata.tags.includes(tag));
+      ? writings.filter((item) => {
+          return tags.some((tag) => item.tags.includes(tag));
         })
-      : posts;
+      : writings;
+
+  const title =
+    tags.length > 0 ? (
+      <>
+        Posts tagged{' '}
+        <em>
+          {tags.map((t, i) => (
+            <Fragment key={t}>
+              {t}
+              {i < tags.length - 1 ? ', ' : ''}
+            </Fragment>
+          ))}
+        </em>
+      </>
+    ) : (
+      <>
+        All <em>writings.</em>
+      </>
+    );
 
   return (
     <>
-      <PageMetaTags />
-      <Flipped flipId="latest-writing-heading" spring="noWobble" translate>
-        {(flippedProps: any) => (
-          <PageTitle {...flippedProps}>
-            Latest writings <Tags tags={tags} /> <EmojiSpan>✍️</EmojiSpan>
-          </PageTitle>
+      <PageMetaTags title="Blog" />
+
+      <div className="page-pad">
+        <PageHeader eyebrow="Writing" title={title} />
+
+        {tags.length > 0 && (
+          <div className="mb-4">
+            <TextLink className="text-[13px]" href="/blog">
+              ← Clear filter
+            </TextLink>
+          </div>
         )}
-      </Flipped>
-      <PostPreviewList posts={filteredPosts} />
+
+        <div>
+          {filteredWritings.map((item) => (
+            <PostRow key={item.link} item={item} />
+          ))}
+        </div>
+      </div>
     </>
   );
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
+  const posts = await getPosts({ limit: 0, onlyPreview: true });
+
   return {
     props: {
-      posts: await getPosts({ limit: 0, onlyPreview: true }),
+      writings: mergeWritings(posts),
     },
   };
 };

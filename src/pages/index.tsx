@@ -1,65 +1,60 @@
-import { Flipped } from 'react-flip-toolkit';
 import { GetStaticProps } from 'next/types';
-import { useRouter } from 'next/router';
 
-import { PageMetaTags } from '@/components/Seo/PageMetaTags';
-import { PostPreviewList } from '@/components/Blog/Post/PostPreviewList';
-import { SectionTitle } from '@/components/Typography/SectionTitle';
-import { LandingHero } from '@/components/Hero';
-import { Post } from '@/blog/types';
+import { WritingItem } from '@/blog/types';
 import { getPosts } from '@/blog/getPosts';
-import { Panel } from '@/components/common/Panel';
-import { Paragraph } from '@/components/Typography/Paragraph';
+import { getFeaturedWritings } from '@/blog/featured';
+import { mergeWritings } from '@/blog/writings';
+import { PostRow } from '@/components/Blog/PostRow';
+import { TextLink } from '@/components/common/TextLink';
+import { HeroSection } from '@/components/home/HeroSection';
+import { BlogStats, WidgetGrid } from '@/components/home/WidgetGrid';
+import { PageMetaTags } from '@/components/Seo/PageMetaTags';
 
 type Props = {
-  posts: Post[];
+  featuredWritings: WritingItem[];
+  blogStats: BlogStats;
 };
 
-export default function Home({ posts }: Props) {
-  const router = useRouter();
-  const wasRedirected = router.query.status === 'redirected';
-
+export default function Home({ featuredWritings, blogStats }: Props) {
   return (
     <>
       <PageMetaTags />
 
-      <section aria-label="hero section">
-        {wasRedirected && (
-          <Panel title="⚠ Notice" type="info">
-            <Paragraph>
-              Looks like you were redirected here!{' '}
-              <a
-                className="underline"
-                href="#"
-                onClick={() => window.history.back()}
-              >
-                Click here to go back.
-              </a>
-            </Paragraph>
-          </Panel>
-        )}
-        <LandingHero />
-      </section>
+      <div className="flex-1">
+        <HeroSection />
 
-      <div className="my-16" />
+        {/* Featured writings */}
+        <div className="latest-pad">
+          <div className="flex items-baseline justify-between mb-3">
+            <p className="eyebrow">Featured writings</p>
+            <TextLink className="text-[13px]" href="/blog">
+              All writings →
+            </TextLink>
+          </div>
 
-      <section aria-label="latest writings">
-        <Flipped flipId="latest-writing-heading" spring="noWobble" translate>
-          {(flippedProps: any) => (
-            <SectionTitle {...flippedProps}>Latest writings ✍️</SectionTitle>
-          )}
-        </Flipped>
+          <div>
+            {featuredWritings.map((item) => (
+              <PostRow key={item.link} item={item} />
+            ))}
+          </div>
+        </div>
 
-        <PostPreviewList posts={posts} />
-      </section>
+        <WidgetGrid blogStats={blogStats} />
+      </div>
     </>
   );
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
+  const allPosts = await getPosts({ onlyPreview: true });
+  const allWritings = mergeWritings(allPosts);
+
   return {
     props: {
-      posts: await getPosts({ limit: 3, onlyPreview: true }),
+      featuredWritings: getFeaturedWritings(allWritings),
+      blogStats: {
+        postCount: allWritings.length,
+      },
     },
   };
 };

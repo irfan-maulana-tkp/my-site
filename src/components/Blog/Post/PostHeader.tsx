@@ -1,15 +1,12 @@
-import tinytime from 'tinytime';
 import { Flipped } from 'react-flip-toolkit';
 import { useRouter } from 'next/router';
 
-import { PageTitle } from '@/components/Typography/PageTitle';
 import { PostMeta } from '@/blog/types';
-import { Tag } from '@/components/common/Tag';
+import { Heading } from '@/components/common/Heading';
+import { Chip } from '@/components/common/Chip';
 import { InternalLink } from '@/components/Typography/InternalLink';
-import { SkipSSR } from '@/components/SkipSSR';
 
-const postDateTemplate = tinytime('{MM} {DD}, {YYYY}');
-const postDateTemplateXl = tinytime('{MMMM} {DD}, {YYYY}');
+import { formatPostDate } from '@/lib/datetime';
 
 interface Props {
   meta: Exclude<PostMeta, 'ogImage'>;
@@ -17,63 +14,47 @@ interface Props {
 
 export const PostHeader = ({ meta }: Props) => {
   const router = useRouter();
-
   const isBlogPost = router.pathname.startsWith('/posts/');
 
   return (
-    <>
-      <header>
-        <div>
-          <div>
-            <Flipped flipId={meta.title} spring="noWobble" translate>
-              {(flippedProps: any) => (
-                <PageTitle {...flippedProps}>{meta.title}</PageTitle>
-              )}
-            </Flipped>
+    <header className="mb-8">
+      {isBlogPost && (
+        <Flipped flipId={`${meta.title}-meta`} spring="noWobble" stagger>
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
+            <span className="eyebrow">
+              {formatPostDate(meta.date, true)}
+            </span>
+            <span className="text-(--color-ink-4) text-[11px]">&middot;</span>
+            <span className="text-[12px] text-(--color-ink-3) font-medium">
+              {meta.readingTime}
+            </span>
           </div>
-          {isBlogPost && (
-            <Flipped flipId={`${meta.title}-meta`} spring="noWobble" stagger>
-              <dl className="mt-1">
-                <div className="flex flex-row flex-wrap space-x-1 text-sm leading-6 text-theme-subtitle items-center">
-                  <dt>Published on</dt>
-                  <dd>
-                    <time className="block md:hidden" dateTime={meta.date}>
-                      <SkipSSR fallback={meta.date}>
-                        {postDateTemplate.render(new Date(meta.date))}
-                      </SkipSSR>
-                    </time>
-                    <time className="hidden md:block" dateTime={meta.date}>
-                      <SkipSSR fallback={meta.date}>
-                        {postDateTemplateXl.render(new Date(meta.date))}
-                      </SkipSSR>
-                    </time>
-                  </dd>
-                  <div className="mx-1">&middot;</div>
-                  <dt className="sr-only">Time to read</dt>
-                  <dd className="leading-6">{meta.readingTime} ☕</dd>
-                  <div className="mr-2" />
-                  <dt className="sr-only">Post category</dt>
-                  <dd className="flex space-x-2">
-                    {meta.tags.map((tag) => (
-                      <Tag key={tag} variant="secondary">
-                        <InternalLink
-                          className="hover:underline"
-                          href={`/blog?tags=${tag}`}
-                          isNotFancy
-                        >
-                          {tag}
-                        </InternalLink>
-                      </Tag>
-                    ))}
-                  </dd>
-                </div>
-              </dl>
-            </Flipped>
-          )}
-        </div>
-      </header>
+        </Flipped>
+      )}
 
-      <hr className="mx-6 xl:mx-8 border-gray-400 border-opacity-50 my-6" />
-    </>
+      <Flipped flipId={meta.title} spring="noWobble" translate>
+        {(flippedProps: any) => (
+          <Heading level={1} {...flippedProps}>
+            {meta.title}
+          </Heading>
+        )}
+      </Flipped>
+
+      {isBlogPost && meta.tags.length > 0 && (
+        <div className="flex gap-1.5 mt-3">
+          {meta.tags.map((tag) => (
+            <Chip key={tag} size="xs" variant="highlight">
+              <InternalLink
+                className="hover:underline"
+                href={`/blog?tags=${tag}`}
+                isNotFancy
+              >
+                {tag}
+              </InternalLink>
+            </Chip>
+          ))}
+        </div>
+      )}
+    </header>
   );
 };

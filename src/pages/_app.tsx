@@ -1,69 +1,35 @@
-import * as React from 'react';
-import { useRouter } from 'next/router';
-import { Flipper } from 'react-flip-toolkit';
-import { AppType } from 'next/dist/shared/lib/utils';
+import type { AppProps } from 'next/app';
 import { Toaster } from 'react-hot-toast';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { Analytics } from '@/components/Analytics/Analytics';
 import { CommonMetaTags } from '@/components/Seo/CommonMetaTags';
-import Header from '@/components/Header';
-import { Footer } from '@/components/Footer';
-import { PageContainer } from '@/components/Page/PageContainer';
 import { CommandPalette } from '@/components/CommandPalette';
-import { ThemeProvider } from '@/components/Theme/ThemeProvider';
 import { CommandPaletteProvider } from '@/components/CommandPalette/CommandPaletteProvider';
-import { NavigationProvider } from '@/contexts/navigation';
-
-import { useReduceMotion } from '@/hooks/useReduceMotion';
+import { AppShell } from '@/components/layout/AppShell';
 
 import { isProd } from '@/utils/constants';
-import '@/styles/theme.css';
-import '@/styles/tailwind.css';
-import { initFonts } from '@/utils/fonts';
+import { fontsClasses } from '@/utils/fonts';
+import '@/styles/globals.css';
 
 const queryClient = new QueryClient();
-initFonts();
 
-const MyApp: AppType = ({ Component, pageProps }) => {
-  const router = useRouter();
-  const prefersReducedMotion = useReduceMotion();
-
+const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
-    <>
+    // Font variable classes here ensure Next.js injects the @font-face CSS.
+    <div className={fontsClasses}>
       <Toaster />
       <CommandPaletteProvider>
-        {/* Suppress children prop error because of React 18 */}
-        {/* @ts-expect-error */}
         <QueryClientProvider client={queryClient}>
-          <NavigationProvider>
-            <ThemeProvider>
-              <CommonMetaTags />
-
-              <Header />
-
-              <Flipper
-                flipKey={prefersReducedMotion ? 'static' : router.asPath}
-                staggerConfig={{
-                  default: {
-                    speed: 1,
-                  },
-                }}
-              >
-                <PageContainer>
-                  <Component {...pageProps} />
-                </PageContainer>
-              </Flipper>
-
-              <Footer />
-
-              <CommandPalette />
-              {isProd ? <Analytics /> : null}
-            </ThemeProvider>
-          </NavigationProvider>
+          <CommonMetaTags />
+          <AppShell>
+            <Component {...pageProps} />
+          </AppShell>
+          <CommandPalette />
+          {isProd ? <Analytics /> : null}
         </QueryClientProvider>
       </CommandPaletteProvider>
-    </>
+    </div>
   );
 };
 

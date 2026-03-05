@@ -1,7 +1,8 @@
+import { ArrowUpRight, CircleDot, Moon, Sun } from 'lucide-react';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
-import { ThemeContext } from '@/components/Theme/ThemeProvider';
+import { useTheme } from '@/hooks/useTheme';
 
 import { cn } from '@/utils/styles/classNames';
 import { publicUrl } from '@/utils/constants';
@@ -26,20 +27,35 @@ export const Action = ({
   onClick,
 }: Props) => {
   const actionElementRef = useRef<HTMLButtonElement>(null);
-  const [theme, setTheme] = useContext(ThemeContext);
+  const { setTheme } = useTheme();
   const router = useRouter();
 
-  const getToggleThemeIcon = () => {
-    return theme !== 'dark' ? '☀️' : '🌙';
-  };
-
-  const isThemeToggleAction = query === 'Toggle dark/light theme';
+  const isEnablingDarkTheme = query === 'Enable dark theme';
+  const isEnablingDimTheme = query === 'Enable dim theme';
+  const isEnablingLightTheme = query === 'Enable light theme';
+  const isThemeToggleAction =
+    isEnablingDarkTheme || isEnablingDimTheme || isEnablingLightTheme;
   const isShareArticleAction = query === 'Share this article';
-  const icon = isThemeToggleAction ? getToggleThemeIcon() : '↗️';
+
+  const icon = isEnablingLightTheme ? (
+    <Sun size={14} aria-hidden="true" />
+  ) : isEnablingDimTheme ? (
+    <Moon size={14} aria-hidden="true" />
+  ) : isEnablingDarkTheme ? (
+    <CircleDot size={14} aria-hidden="true" />
+  ) : (
+    <ArrowUpRight size={14} aria-hidden="true" />
+  );
 
   const handleClick = () => {
     if (isThemeToggleAction) {
-      setTheme(theme === 'dark' ? 'default' : 'dark');
+      if (isEnablingDarkTheme) {
+        setTheme('dark');
+      } else if (isEnablingDimTheme) {
+        setTheme('dim');
+      } else if (isEnablingLightTheme) {
+        setTheme('light');
+      }
     } else if (isShareArticleAction) {
       const text = `${document.title} ${publicUrl}${router.pathname} via @jackyef__`;
 
@@ -92,40 +108,36 @@ export const Action = ({
       role="listitem"
       onClick={handleClick}
       style={{
-        scrollMarginTop: '3rem',
-        scrollMarginBottom: '3rem',
+        scrollMarginTop: '2rem',
+        scrollMarginBottom: '2rem',
       }}
       className={cn(
-        'focusable-cmd-item', // Used to set focus
-
-        'rounded-sm',
-        'last:rounded-b-lg', // TODO: Change this with last-of-type when we upgrade tailwind
-
-        'mx-4',
-        'px-4',
-        'py-2',
+        'focusable-cmd-item',
+        'rounded-md',
+        'mx-1.5',
+        'px-3',
+        'py-1.5',
         'text-left',
-        'hover:bg-surface-3',
-        'focus:bg-surface-3',
-        'bg-surface-1',
-        'text-theme-text',
+        'text-sm',
+        'hover:bg-(--color-bg-hover)',
+        'focus:bg-(--color-bg-hover)',
+        'text-(--color-ink-2)',
         'transition-colors',
-        'duration-500',
-        'hover:duration-100',
-        'focus:duration-100',
+        'duration-150',
+        'outline-none',
       )}
     >
-      <div className={cn('flex', 'justify-between')}>
-        <h4 className="font-medium">
+      <div className="flex items-center justify-between gap-2">
+        <span className="font-medium text-(--color-ink) truncate">
           <HighlightedQuery
             query={query}
             userSubmittedQuery={userSubmittedQuery}
           />
-        </h4>
-        <span aria-hidden>{icon}</span>
+        </span>
+        <span className="text-(--color-ink-4) shrink-0">{icon}</span>
       </div>
       {description && (
-        <p className={cn('text-sm', 'text-theme-subtitle', 'mt-2', 'pr-4')}>
+        <p className="text-xs text-(--color-ink-3) mt-0.5 truncate">
           <HighlightedQuery
             query={description}
             userSubmittedQuery={userSubmittedQuery}

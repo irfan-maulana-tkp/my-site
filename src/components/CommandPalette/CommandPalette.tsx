@@ -1,12 +1,13 @@
 import * as Dialog from '@radix-ui/react-dialog';
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { useCallback, useEffect, useState } from 'react';
 
+import { Surface } from '@/components/common/Surface';
+
 import { cn } from '@/utils/styles/classNames';
-import { getPlatformMetaKey } from '@/utils/keyboard';
 
 import { useCommandPaletteContext } from './hooks/useCommandPaletteContext';
 import { useNavigationAction } from './hooks/useNavigationAction';
-import { useOnboardingToast } from './hooks/useOnboardingToast';
 import { usePostSearch } from './hooks/usePostSearch';
 import { useStaticResult } from './hooks/useStaticResult';
 import { ResultBox } from './ResultBox';
@@ -19,7 +20,6 @@ export default () => {
   const { actionQueries, externalLinkResult, pageSearchResult } =
     useStaticResult({ query });
   const { data: postSearchResult } = usePostSearch(query);
-  const { onFirstTimeOpen, hasOpenedBefore } = useOnboardingToast();
 
   const closeCommandPalette = useCallback(() => {
     setIsOpen(false);
@@ -37,8 +37,6 @@ export default () => {
       ) {
         event.preventDefault();
         setIsOpen((prev) => !prev);
-
-        onFirstTimeOpen();
       }
     };
 
@@ -47,7 +45,7 @@ export default () => {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [onFirstTimeOpen, setIsOpen]);
+  }, [setIsOpen]);
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
     const activeElement = document.activeElement;
@@ -89,14 +87,9 @@ export default () => {
   };
 
   const getPlaceholderText = () => {
-    const defaultMessage = `Try typing "dark theme" or "tools"!`;
+    const defaultMessage = `Try typing "theme" or "tools"!`;
 
-    if (!hasOpenedBefore) {
-      return defaultMessage;
-    } else {
-      const shortcutMessage = `Press ${getPlatformMetaKey()} + K anytime to access this command palette.`;
-      return Math.random() > 0.5 ? defaultMessage : shortcutMessage;
-    }
+    return defaultMessage;
   };
 
   const hasActions = actionQueries.length > 0;
@@ -109,35 +102,39 @@ export default () => {
   return (
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen} modal>
       <Dialog.Overlay>
-        <div className="backdrop-blur fixed inset-0 bg-black bg-opacity-30 animate-fadeIn z-10" />
+        <div
+          className="backdrop-blur fixed inset-0 animate-fadeIn"
+          style={{ background: 'rgba(0, 0, 0, 0.3)', zIndex: 1000 }}
+        />
       </Dialog.Overlay>
       <Dialog.Content asChild>
-        <div
+        <Surface
+          elevation="lg"
+          rounded="lg"
           onKeyDown={handleKeyDown}
           className={cn(
-            'p-4',
-            'bg-surface-1',
-            'text-theme-text',
-            'rounded-3xl',
-            'top',
+            'p-1.5',
             'animate-fadeIn',
             'transition-colors',
             'duration-500',
-            'border-dark-only',
-            'z-20',
+            'text-(--color-ink-2)',
+            'fixed left-1/2 -translate-x-1/2 w-[90vw] max-w-lg',
           )}
           style={{
-            position: 'fixed',
-            top: '30%',
-            left: '50%',
-            transform: 'translate(-50%)',
-            width: '90vw',
-            maxWidth: '44rem',
+            top: '12vh',
+            zIndex: 1001,
           }}
         >
+          <VisuallyHidden.Root>
+            <Dialog.Title>Command palette</Dialog.Title>
+            <Dialog.Description>
+              Search for actions, pages, and posts
+            </Dialog.Description>
+          </VisuallyHidden.Root>
           <SearchInput
             placeholder={getPlaceholderText()}
             value={query}
+            autoFocus
             onChange={handleChangeQuery}
             hasResults={hasResults}
           />
@@ -178,7 +175,7 @@ export default () => {
               />
             </ResultBox>
           )}
-        </div>
+        </Surface>
       </Dialog.Content>
     </Dialog.Root>
   );

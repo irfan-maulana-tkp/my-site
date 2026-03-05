@@ -1,6 +1,6 @@
 import { css } from 'goober';
 import { MutableRefObject, useRef } from 'react';
-import { motion, useMotionValueEvent, useScroll } from 'framer-motion';
+import { motion, useMotionValueEvent, useScroll } from 'motion/react';
 
 import { getMonthDifference, TODAY } from '@/lib/datetime';
 
@@ -60,7 +60,6 @@ export const TimelineEvent = ({
   const shouldBeActiveAt = startingPosition / totalTimelineMonths;
   const { scrollYProgress } = useScroll({
     container: containerRef as MutableRefObject<HTMLDivElement>,
-    layoutEffect: false,
   });
 
   useMotionValueEvent(scrollYProgress, 'change', (latest) => {
@@ -118,7 +117,8 @@ export const TimelineEvent = ({
           'absolute flex justify-start items-start text-left inset-1 rounded-lg p-2',
           'text-xs leading-5 bg-opacity-90',
           css`
-            transition: background-color 0.2s ease-in-out,
+            transition:
+              background-color 0.2s ease-in-out,
               left 0.2s ease-in 0.25s;
           `,
           {

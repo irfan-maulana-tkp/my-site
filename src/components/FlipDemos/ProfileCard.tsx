@@ -1,3 +1,5 @@
+import { type JSX } from 'react';
+
 import { Flip } from '@/lib/flip/react';
 
 export type Props = {
@@ -28,7 +30,7 @@ export const ProfileCard = ({
   };
 
   return (
-    <div className="flex justify-start shadow-surface-2 bg-surface-2 rounded-lg p-4 w-[400px] max-w-full gap-3">
+    <div className="flex justify-start shadow-md bg-(--color-bg-panel) rounded-lg p-4 w-[400px] max-w-full gap-3">
       {renderWithWrapper(
         <img
           loading="lazy"
@@ -39,11 +41,14 @@ export const ProfileCard = ({
           src="https://avatars.githubusercontent.com/u/7252454?v=4"
         />,
       )}
-      <div className="leading-5">
-        <a className="font-semibold cursor-pointer" onClick={onLinkClick}>
+      <div className="leading-5 text-(--color-ink-2)">
+        <a
+          className="font-semibold cursor-pointer text-(--color-ink)"
+          onClick={onLinkClick}
+        >
           Jacky Efendi
         </a>
-        <div className="opacity-70 mt-1 mb-2">@jackyef__</div>
+        <div className="text-(--color-ink-3) mt-1 mb-2">@jackyef__</div>
         <div>
           Code web-related stuff. I sometimes tweet about tech and career, other
           times about all random thoughts in adulting life.

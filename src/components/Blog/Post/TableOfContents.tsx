@@ -1,85 +1,73 @@
-import React, { useId, useMemo } from 'react';
+import { motion } from 'motion/react';
+import { useId } from 'react';
 
 import type { PostHeading } from '@/blog/types';
 import { cleanHeadingContent, slugify } from '@/lib/blog';
 
 import { cn } from '@/utils/styles/classNames';
 
-import { TableOfContentItem } from './TableOfContentItem';
-
 type Props = {
   headings: PostHeading[];
+  activeSlug: string | null;
 };
 
-export const TableOfContents = ({ headings }: Props) => {
+export const TableOfContents = ({ headings, activeSlug }: Props) => {
   const labelId = useId();
-
-  const content = useMemo(() => {
-    let lastHeadingLevel: number;
-    const rootList: Array<React.ReactNode | React.ReactNode[]> = [];
-    let currentList: Array<React.ReactNode | React.ReactNode> = rootList;
-
-    headings.forEach((heading) => {
-      const slug = slugify(heading.content);
-      const listItem = (
-        <TableOfContentItem
-          key={slug}
-          slug={slug}
-          content={cleanHeadingContent(heading.content)}
-          level={heading.level}
-        />
-      );
-
-      // This snippet only works because we only handle h2 and h3
-      if (!lastHeadingLevel || heading.level === lastHeadingLevel) {
-        currentList.push(listItem);
-      } else if (heading.level > lastHeadingLevel) {
-        const newList = [listItem];
-        currentList.push(newList);
-        currentList = newList;
-      } else {
-        rootList.push(listItem);
-        currentList = rootList;
-      }
-      lastHeadingLevel = heading.level;
-    });
-
-    let listKey = 1;
-
-    const renderList = (array: Array<React.ReactNode>) => {
-      return (
-        <ol key={listKey++} className={cn('mb-4')}>
-          {array.map((listItem) => listItem)}
-        </ol>
-      );
-    };
-
-    return renderList(
-      rootList.map((listOrItem) => {
-        if (Array.isArray(listOrItem)) {
-          return renderList(listOrItem);
-        } else {
-          return listOrItem;
-        }
-      }),
-    );
-  }, [headings]);
+  const indicatorId = useId();
 
   return (
-    <nav
-      aria-labelledby={labelId}
-      className={cn('max-h-[80vh] overflow-y-auto overflow-x-clip')}
-    >
+    <nav aria-labelledby={labelId} className="overflow-x-clip">
       <div
-        className={cn(
-          'font-bold text-theme-heading opacity-70 mb-4 uppercase tracking-wider',
-        )}
         id={labelId}
+        className="text-[11px] font-semibold tracking-[0.08em] uppercase text-(--color-ink-4) mb-3"
       >
-        In this post
+        On this page
       </div>
 
-      {content}
+      <ol className="list-none p-0 m-0">
+        {headings.map((heading) => {
+          const slug = slugify(heading.content);
+          const isActive = activeSlug === slug;
+
+          return (
+            <li
+              key={slug}
+              className={cn(
+                'relative',
+                heading.level === 3 ? 'pl-5' : 'pl-[10px]',
+              )}
+            >
+              {isActive && (
+                <motion.div
+                  layoutId={indicatorId}
+                  className="absolute left-0 top-[2px] bottom-[2px] w-[2px] rounded-sm bg-(--color-accent)"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
+              <a
+                href={`#${slug}`}
+                onClick={() => {
+                  window.dispatchEvent(
+                    new CustomEvent('blog:heading-active', {
+                      detail: { slug },
+                    }),
+                  );
+                }}
+                className={cn(
+                  'block py-1 no-underline transition-[colors, transform] duration-150 leading-[1.4]',
+                  heading.level === 3 ? 'text-[12px]' : 'text-[13px]',
+                  'hover:text-(--color-ink-3)',
+                  isActive
+                    ? 'font-bold text-(--color-ink-2) transform translate-x-0.5'
+                    : 'font-normal text-(--color-ink-4)',
+                )}
+              >
+                {cleanHeadingContent(heading.content)}
+              </a>
+            </li>
+          );
+        })}
+      </ol>
     </nav>
   );
 };
