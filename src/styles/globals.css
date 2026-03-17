@@ -624,15 +624,6 @@ h2 em {
   border-bottom-left-radius: 0.375rem;
 }
 
-/* View transitions */
-::view-transition-old(root) {
-  animation: 0.22s ease both fade-out;
-}
-
-::view-transition-new(root) {
-  animation: 0.22s ease both fade-in;
-}
-
 @keyframes fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
