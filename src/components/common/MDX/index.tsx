@@ -41,7 +41,7 @@ const mdxComponents = {
         rel="noopener noreferrer"
         className={cn('relative block w-full h-96 not-prose')}
       >
-        <img loading="lazy" {...props} className={cn('object-contain')} />
+        <img loading="lazy" alt="" {...props} className={cn('object-contain')} />
       </a>
     );
   },

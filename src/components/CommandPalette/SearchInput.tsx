@@ -29,6 +29,7 @@ export const SearchInput = ({
           'text-(--color-ink)',
         )}
         type="text"
+        aria-label="Search actions and pages"
         {...props}
       />
     </div>

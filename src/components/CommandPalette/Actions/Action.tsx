@@ -105,7 +105,7 @@ export const Action = ({
   return (
     <button
       ref={actionElementRef}
-      role="listitem"
+      role="option"
       onClick={handleClick}
       style={{
         scrollMarginTop: '2rem',

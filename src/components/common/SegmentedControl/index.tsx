@@ -34,7 +34,7 @@ export function SegmentedControl<T extends string>({
           key={opt.value}
           onClick={() => onChange(opt.value)}
           title={opt.title ?? opt.label}
-          aria-label={opt.label ? `Switch to ${opt.label}` : undefined}
+          aria-label={opt.label ? `Switch to ${opt.label}` : opt.title}
           aria-pressed={value === opt.value}
           className={cn(
             'flex-1 flex items-center justify-center gap-1 px-[9px] py-[5px] text-[11px] font-medium cursor-pointer border-none font-[inherit] transition-[background,color] duration-[130ms] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-(--color-accent)',

@@ -66,7 +66,19 @@ function BouncingDuck() {
 
     let lastTime = -1;
 
+    const handleVisibility = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(rafRef.current);
+        lastTime = -1;
+      } else {
+        lastTime = -1;
+        rafRef.current = requestAnimationFrame(tick);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
     function tick(now: number) {
+      if (document.hidden) return;
       if (lastTime < 0) {
         lastTime = now;
         rafRef.current = requestAnimationFrame(tick);
@@ -100,7 +112,10 @@ function BouncingDuck() {
     }
 
     rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
   }, [x, y, rotate]);
 
   const squeakTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);

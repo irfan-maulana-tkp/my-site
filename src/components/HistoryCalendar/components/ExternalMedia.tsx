@@ -28,10 +28,12 @@ export const ExternalMedia = ({ href, imgSrc, title }: ExternalMediaProps) => {
       className="inline-block relative overflow-hidden rounded-lg isolate w-24 aspect-video"
       href={href}
       title={title}
+      aria-label={`${title} (opens in new tab)`}
       target="_blank"
       rel="noopener noreferrer"
     >
       <div
+        aria-hidden="true"
         className={cn(
           'absolute inset-0 rounded-lg opacity-0 hover:opacity-100 transition-opacity',
           'bg-gradient-to-t from-black/50',
@@ -51,6 +53,7 @@ export const ExternalMedia = ({ href, imgSrc, title }: ExternalMediaProps) => {
         className="z-10 block rounded-lg w-full h-full object-cover transition-transform duration-500"
         src={imgSrc}
         alt={title}
+        loading="lazy"
       />
     </a>
   );

@@ -22,6 +22,7 @@ export const LinkPreview = ({ href }: Props) => {
           alt={String(data.title || data.siteName || '')}
           className="rounded-lg h-[150px] object-contain w-full mb-0.5"
           height={150}
+          loading="lazy"
         />
       )}
       <span className="text-[14px] font-bold text-(--color-ink)">

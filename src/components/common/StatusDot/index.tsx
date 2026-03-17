@@ -15,10 +15,12 @@ export function StatusDot({
     <span
       className={cn(
         'w-[7px] h-[7px] rounded-full shrink-0 inline-block',
-        pulse && 'animate-pulse',
+        pulse && 'animate-status-pulse',
         className,
       )}
       style={{ background: color }}
+      role="presentation"
+      aria-hidden="true"
     />
   );
 }

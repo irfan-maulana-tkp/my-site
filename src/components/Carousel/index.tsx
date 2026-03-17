@@ -45,25 +45,23 @@ const Carousel = ({ children, scrollTimelineName }: Props) => {
     }
   }, []);
 
+  const scrollRaf = React.useRef(0);
   const handleScroll = React.useCallback(() => {
-    requestAnimationFrame(() => {
-      if (carouselRef.current && prevRef.current && nextRef.current) {
-        const sl = carouselRef.current.scrollLeft;
-        const sw = carouselRef.current.scrollWidth;
-        const ow = carouselRef.current.offsetWidth;
+    cancelAnimationFrame(scrollRaf.current);
+    scrollRaf.current = requestAnimationFrame(() => {
+      const carousel = carouselRef.current;
+      const prev = prevRef.current;
+      const next = nextRef.current;
+      if (!carousel || !prev || !next) return;
 
-        if (sl <= 10) {
-          prevRef.current.classList.add('scale-0');
-        } else {
-          prevRef.current.classList.remove('scale-0');
-        }
+      // Batch all reads first
+      const sl = carousel.scrollLeft;
+      const sw = carousel.scrollWidth;
+      const ow = carousel.offsetWidth;
 
-        if (sw <= sl + ow) {
-          nextRef.current.classList.add('scale-0');
-        } else {
-          nextRef.current.classList.remove('scale-0');
-        }
-      }
+      // Then batch all writes
+      prev.classList.toggle('scale-0', sl <= 10);
+      next.classList.toggle('scale-0', sw <= sl + ow);
     });
   }, []);
 

@@ -74,6 +74,7 @@ export const ClaymorphismTools = () => {
         <div className={cn('flex', 'flex-col', 'space-y-1')}>
           <label htmlFor="shadowColor">Base shadow color</label>
           <input
+            id="shadowColor"
             name="shadowColor"
             type="color"
             value={`#${baseShadowColors.red.toString(
@@ -93,6 +94,7 @@ export const ClaymorphismTools = () => {
           </label>
 
           <input
+            id="lightSource"
             type="range"
             min={0}
             max={2 * Math.PI}
@@ -105,6 +107,7 @@ export const ClaymorphismTools = () => {
         <div className={cn('flex', 'flex-col', 'space-y-1')}>
           <label htmlFor="elevation">Elevation ({elevation})</label>
           <input
+            id="elevation"
             name="elevation"
             type="range"
             min={0.1}
@@ -133,10 +136,11 @@ export const ClaymorphismTools = () => {
           className="language-css rounded-md py-3 px-4 overflow-x-auto"
           tabIndex={0}
           role="button"
+          aria-label="Copy CSS code to clipboard"
           onClick={handleCodeCopy}
           onKeyDown={(e) => {
-            // if space or enter, copy the code
             if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
               handleCodeCopy();
             }
           }}
