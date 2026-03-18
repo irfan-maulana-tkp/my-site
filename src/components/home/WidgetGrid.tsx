@@ -133,7 +133,7 @@ function AboutWidget({ blogStats }: { blogStats: BlogStats }) {
           <li key={href}>
             <a
               href={href}
-              target="_blank"
+              target={'_blank'}
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-[14px] text-(--color-ink-2) hover:text-(--color-accent-text) transition-colors"
             >

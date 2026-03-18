@@ -74,6 +74,12 @@ export function BioView() {
           >
             LinkedIn
           </ExternalLink>
+          . Or if you prefer old-fashioned email, you can reach me at{' '}
+          <ExternalLink
+            href={SOCIALS.find((s) => s.label === 'Email')?.href || '#'}
+          >
+            hello[at]jackyef[dot]com
+          </ExternalLink>
           .
         </Text>
       </div>
