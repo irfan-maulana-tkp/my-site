@@ -78,7 +78,6 @@ plugins=(git docker-compose)
 
 # Some aliases for less keystrokes
 alias gpuo="git push -u origin"
-alias gpuo="git push -u origin"
 alias dclfs="docker-compose logs -f --since 0m"
 alias dcrr="docker-compose run --rm"
 
@@ -92,6 +91,16 @@ gbclean() {
   gb | cut -c 3- | grep -vE "$exclude_branches" | xargs git branch -D
 }
 
+# docker-compose exec with a shell, e.g.: `dcesh web` will run `docker-compose exec web /bin/sh`
+dcesh() {
+  # fail if no argument is provided
+  if [[ -z $1 ]]; then
+    echo "Usage: dcesh <service_name>"
+    return 1
+  fi
+
+  dce $1 /bin/sh
+}
 
 # Customizing prompt so I know I am currently in an SSH session in my WSL2 instance
 # I only do this on my WSL2 instance
