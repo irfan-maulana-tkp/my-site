@@ -25,7 +25,7 @@ export function SegmentedControl<T extends string>({
   return (
     <div
       className={cn(
-        'flex rounded-[8px] border border-(--color-border) overflow-hidden bg-(--color-bg)',
+        'flex rounded-[10px] p-[3px] overflow-hidden bg-(--color-bg) shadow-(--shadow-inset)',
         className,
       )}
     >
@@ -37,9 +37,9 @@ export function SegmentedControl<T extends string>({
           aria-label={opt.label ? `Switch to ${opt.label}` : opt.title}
           aria-pressed={value === opt.value}
           className={cn(
-            'flex-1 flex items-center justify-center gap-1 px-[9px] py-[5px] text-[11px] font-medium cursor-pointer border-none font-[inherit] transition-[background,color] duration-[130ms] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-(--color-accent)',
+            'flex-1 flex items-center justify-center gap-1 px-[9px] py-[5px] text-[11px] font-medium cursor-pointer border-none font-[inherit] rounded-[7px] transition-[background,color,box-shadow] duration-[130ms] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-(--color-accent)',
             value === opt.value
-              ? 'bg-(--color-bg-active) text-(--color-accent-text)'
+              ? 'bg-(--color-bg-panel) text-(--color-accent-text) shadow-(--shadow-sm)'
               : 'bg-transparent text-(--color-ink-4)',
           )}
         >

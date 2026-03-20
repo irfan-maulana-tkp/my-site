@@ -65,6 +65,10 @@
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
   --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.14), 0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-inset:
+    inset 0 2px 4px rgba(0,0,0,0.07),
+    inset 0 4px 8px rgba(0,0,0,0.04),
+    inset 0 -1px 2px rgba(255,255,255,0.5);
   --color-success: #4caf84;
   --color-success-bg: #f0fdf4;
   --color-info: #2563eb;
@@ -139,6 +143,11 @@
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.12);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.15);
   --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2);
+  --shadow-inset:
+    inset 0 2px 4px rgba(0,0,0,0.30),
+    inset 0 4px 10px rgba(0,0,0,0.20),
+    inset 0 -1px 1px rgba(255,255,255,0.04),
+    inset 0 -2px 4px rgba(255,255,255,0.02);
   --color-success: #4caf84;
   --color-success-bg: #1a2e22;
   --color-info: #60a5fa;
@@ -205,6 +214,11 @@
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.25);
   --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-inset:
+    inset 0 2px 4px rgba(0,0,0,0.45),
+    inset 0 4px 12px rgba(0,0,0,0.30),
+    inset 0 -1px 1px rgba(255,255,255,0.06),
+    inset 0 -2px 4px rgba(255,255,255,0.03);
   --color-success: #4caf84;
   --color-success-bg: #141e18;
   --color-info: #60a5fa;
